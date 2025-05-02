@@ -1,4 +1,4 @@
-package aoc.day03;
+package aoc.day3;
 
 public class Instruction implements Comparable<Instruction> {
     public enum Type {

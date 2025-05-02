@@ -1,9 +1,8 @@
 package aoc;
 
 
-import aoc.day03.Day03;
 import aoc.day1.Day01;
-import aoc.day2.Day02;
+import aoc.day4.Day04;
 import aoc.template.DaySolution;
 import aoc.template.PartSolver;
 
@@ -22,9 +21,9 @@ public class AocRunner {
     }
 
     private static void simpleRun(int day) {
-        DaySolution daySolution = new Day03();
+        DaySolution daySolution = new Day04();
         daySolution.runTest(1,PartSolver.BOTH_PARTS);
-        //daySolution.run(PartSolver.PART_TWO);
+        daySolution.run(PartSolver.BOTH_PARTS);
 
     }
 

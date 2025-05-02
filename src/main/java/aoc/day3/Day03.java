@@ -1,4 +1,4 @@
-package aoc.day03;
+package aoc.day3;
 
 import aoc.template.DaySolution;
 
