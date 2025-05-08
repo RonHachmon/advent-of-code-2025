@@ -1,4 +1,5 @@
 #include "Day05.hpp"
+#include "ContainerUlits.hpp"
 #include <iostream>
 #include <sstream>
 #include <algorithm>
@@ -120,10 +121,12 @@ bool Day05::arePrerequisitesSatisfied(
     const std::unordered_set<int>& executedProtocols
 ) {
     for (const auto& prerequisite : prerequisiteMap[protocol]) {
-        if (seenProtocols.find(prerequisite) != seenProtocols.end() && 
-            executedProtocols.find(prerequisite) == executedProtocols.end()) {
+        
+
+        if (isInContainer(seenProtocols, prerequisite) && !isInContainer(executedProtocols, prerequisite)) {
             return false;
         }
+
     }
     
     return true;
@@ -145,11 +148,6 @@ int Day05::calculateTotalValueFromValidSequences() {
     return totalValue;
 }
 
-template <typename T>
-bool Day05::isInSet(const std::unordered_set<T>& set, const T& value) {
-    return set.find(value) != set.end();
-}
-
 void Day05:: FixProtocol(
     int protocolTofix,
     std::list<int>& alignedProtocols,  
@@ -160,12 +158,12 @@ void Day05:: FixProtocol(
 {
     auto& prequistedProtocols = prerequisiteMap[protocolTofix];
     for (const auto& prerequisite : prequistedProtocols) {
-        if(!isInSet(seenProtocols, prerequisite)){
+        if(!isInContainer(seenProtocols, prerequisite)){
             continue;
             
         }
 
-        if (isInSet(executedProtocols, prerequisite) || isInSet(alignedProtocolsSet, prerequisite)){
+        if (isInContainer(executedProtocols, prerequisite) || isInContainer(alignedProtocolsSet, prerequisite)){
             continue;
         }
         else{
@@ -192,10 +190,11 @@ int Day05::calculateTotalValueFromInValidSequences() {
 
             
             for (const auto& protocol : sequence) {
-
-                if(executedProtocols.find(protocol) != executedProtocols.end()){
+                
+                if(isInContainer(executedProtocols, protocol)){
                     continue;
                 }
+
 
                 if (!arePrerequisitesSatisfied(protocol, seenProtocols, executedProtocols)) {
                     std::list<int> alignProtocols{};
@@ -203,7 +202,7 @@ int Day05::calculateTotalValueFromInValidSequences() {
 
 
                     for(int alignedProtocol :alignProtocols){
-                        if(!isInSet(executedProtocols, alignedProtocol)){
+                        if(!isInContainer(executedProtocols, alignedProtocol)){
                             executedProtocols.insert(alignedProtocol);
                             fixedProtocol.push_back(alignedProtocol);                            
                         }
@@ -216,15 +215,9 @@ int Day05::calculateTotalValueFromInValidSequences() {
                 }
             
             }
-            
-            // Calculate the middle value of the sequence
+
             if (!fixedProtocol.empty()) {
                 totalValue += fixedProtocol.at(sequence.size() / 2);
-                //print fixedProtocol
-                // for (const auto& protocol : fixedProtocol) {
-                //     std::cout << protocol << " ";
-                // }
-                // std::cout << std::endl;
             }
         }
     }

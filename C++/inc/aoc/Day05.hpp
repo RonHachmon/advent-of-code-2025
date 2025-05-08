@@ -34,9 +34,6 @@ private:
 
     std::vector<int> parseProtocolSequence(const std::string& line);
 
-    template <typename T>
-    bool isInSet(const std::unordered_set<T>& set, const T& value);
-
 
     void Day05:: FixProtocol(
         int protocolTofix,
