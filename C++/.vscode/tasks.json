@@ -1,0 +1,31 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "type": "shell",
+        "label": "C/C++: cl.exe build active file",
+        "command": "cl.exe",
+        "args": [
+          "/nologo",
+          "/EHsc",
+          "/std:c++17",
+          "/Zc:__cplusplus",
+          "/Zi",                       // debug info
+          "/Fd:main.pdb",              // program database (symbols)
+          "/Iinc/aoc",                 // include path
+          "main.cpp",
+          "src/aoc/Day01.cpp",
+          "src/aoc/Day05.cpp",
+          "src/aoc/DaySolution.cpp",
+          "/Fe:main.exe"               // output executable
+        ],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "problemMatcher": ["$msCompile"],
+        "detail": "Build main.cpp and Day01.cpp using C++17"
+      }
+    ]
+  }
+  
