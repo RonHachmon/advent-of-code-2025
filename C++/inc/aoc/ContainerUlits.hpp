@@ -39,6 +39,7 @@ namespace aoc {
     // Specialization for C-style arrays
     template <typename T, size_t N>
     bool isInContainer(const T (&array)[N], const T& value) {
+        // For C-style arrays
         return std::find(std::begin(array), std::end(array), value) != std::end(array);
     }
 

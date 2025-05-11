@@ -65,6 +65,7 @@
         "xtree": "cpp",
         "unordered_set": "cpp",
         "functional": "cpp",
-        "array": "cpp"
+        "array": "cpp",
+        "map": "cpp"
     }
 }
