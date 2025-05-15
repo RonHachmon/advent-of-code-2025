@@ -17,6 +17,7 @@
           "src/aoc/Day01.cpp",
           "src/aoc/Day05.cpp",
           "src/aoc/Day06.cpp",
+          "src/aoc/Day07.cpp",
           "src/aoc/DaySolution.cpp",
           "src/aoc/Point.cpp",
           "src/aoc/Direction.cpp",
