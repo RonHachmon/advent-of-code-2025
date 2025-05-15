@@ -1,80 +1,79 @@
-// In Day07.hpp
 #ifndef AOC_DAY07_HPP
 #define AOC_DAY07_HPP
+
 #include "DaySolution.hpp"
 #include <vector>
 #include <string>
-#include <memory> // For shared_ptr
+#include <memory>
 
 namespace aoc {
 
-// Operator interface
+// Extract the Operator hierarchy to its own file
 class Operator {
 public:
-    virtual uint64_t operate(uint64_t a, uint64_t b) const = 0;
-    virtual ~Operator() = default; // Virtual destructor
+    virtual uint64_t operate(uint64_t lhs, uint64_t rhs) const = 0;
+    virtual ~Operator() = default;
 };
 
-// Multiplication implementation
-class MultiplicationOperator : public Operator {
-public:
-    uint64_t operate(uint64_t a, uint64_t b) const override {
-        return a * b;
-    }
-};
-
-// Addition implementation
 class AdditionOperator : public Operator {
 public:
-    uint64_t operate(uint64_t a, uint64_t b) const override {
-        return a + b;
+    uint64_t operate(uint64_t lhs, uint64_t rhs) const override {
+        return lhs + rhs;
     }
 };
 
-// Concatenation implementation
+class MultiplicationOperator : public Operator {
+public:
+    uint64_t operate(uint64_t lhs, uint64_t rhs) const override {
+        return lhs * rhs;
+    }
+};
+
 class ConcatenationOperator : public Operator {
 public:
-    uint64_t operate(uint64_t a, uint64_t b) const override {
-        uint64_t digit_in_b = 1;
-        uint64_t temp_b = b;
-        while(temp_b > 0) {
-            temp_b /= 10;
-            digit_in_b *= 10;
-        }
-        return a * digit_in_b + b;
-    }
+    uint64_t operate(uint64_t lhs, uint64_t rhs) const override;
 };
 
+// Main solution class
 class Day07 : public DaySolution {
 public:
-    explicit Day07();
-   
+    Day07();
+    
     std::string solvePart1(const std::vector<std::string>& input) override;
     std::string solvePart2(const std::vector<std::string>& input) override;
-private:
 
+private:
+    using TargetValue = uint64_t;
+    using Number = uint64_t;
+    using Numbers = std::vector<Number>;
+    using OperatorSet = std::vector<std::shared_ptr<Operator>>;
+    
     void parseInput(const std::vector<std::string>& input);
+    void parseLine(const std::string& line);
+    Numbers parseNumbers(const std::string& numbersStr);
 
-    std::string solveWithOperators(const std::vector<std::shared_ptr<Operator>>& operators);
 
-    bool calcPossibleCombinations(uint64_t target, const std::vector<uint64_t>& combination, 
-                                 const std::vector<std::shared_ptr<Operator>>& operators);
+    std::string solveWithOperators(const OperatorSet& operators) const;
+    
+    bool canReachTarget(TargetValue target, const Numbers& numbers, 
+                        const OperatorSet& operators) const;
+    
+    bool findSolution(TargetValue target, const Numbers& numbers,
+                     size_t currentIndex, Number currentValue,
+                     const OperatorSet& operators) const;
 
-    bool helperCalcPossibleCombinations(uint64_t target, const std::vector<uint64_t>& combination,
-                                      size_t index, uint64_t subTarget, 
-                                      const std::vector<std::shared_ptr<Operator>>& operators);
 private:
-    std::vector<uint64_t> m_target_results;
-    std::vector<std::vector<uint64_t>> m_combinations;
+    std::vector<TargetValue> targets_;
+    std::vector<Numbers> numberSets_;
     
-    // Shared operator instances
-    std::shared_ptr<Operator> m_add_op;
-    std::shared_ptr<Operator> m_mult_op;
-    std::shared_ptr<Operator> m_concat_op;
+    // Operators
+    std::shared_ptr<Operator> addOperator_;
+    std::shared_ptr<Operator> multiplyOperator_;
+    std::shared_ptr<Operator> concatenateOperator_;
     
-    // References to operators for each part
-    std::vector<std::shared_ptr<Operator>> m_part1_operators; // For part 1: + and *
-    std::vector<std::shared_ptr<Operator>> m_part2_operators; // For part 2: +, * and concat
+    OperatorSet part1Operators_;
+    OperatorSet part2Operators_;
 };
+
 } // namespace aoc
 #endif // AOC_DAY07_HPP
