@@ -7,8 +7,8 @@ namespace fs = std::filesystem;
 
 int main() {
     aoc::Day06 day06;
-    //day06.runTest(1, aoc::PartSolver::PART_ONE);
-    day06.run(aoc::PartSolver::PART_ONE);
+    //day06.runTest(1, aoc::PartSolver::BOTH_PARTS);
+    day06.run(aoc::PartSolver::BOTH_PARTS);
 
 
     return 0;

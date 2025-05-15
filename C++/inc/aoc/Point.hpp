@@ -1,6 +1,6 @@
 #pragma once
 #include "Direction.hpp"
-
+#include <functional>
 namespace aoc {
 
 /**
@@ -61,9 +61,22 @@ public:
 
     bool operator==(const Point& other) const;
     bool operator!=(const Point& other) const;
+    //hash method
+
 
 private:
     int x, y;
 };
 
 } // namespace aoc
+
+namespace std {
+    template <>
+    struct hash<aoc::Point> {
+        std::size_t operator()(const aoc::Point& p) const noexcept {
+            std::size_t h1 = std::hash<int>{}(p.getX());
+            std::size_t h2 = std::hash<int>{}(p.getY());
+            return h1 ^ (h2 << 1); // Combine hashes
+        }
+    };
+}
