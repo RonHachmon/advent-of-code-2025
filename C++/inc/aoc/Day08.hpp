@@ -15,17 +15,23 @@ namespace aoc {
 // Main solution class
 class Day08 : public DaySolution {
 public:
-    Day08();
+    explicit Day08();
     
     std::string solvePart1(const std::vector<std::string>& input) override;
     std::string solvePart2(const std::vector<std::string>& input) override;
 
 private:
+
     void parseInput(const std::vector<std::string>& input);
+
     void extractAntinodes(const std::vector<Point>& points, std::unordered_set<Point>& antinodes);
+
     void extractAntinodesPartTwo(const std::vector<Point>& points, std::unordered_set<Point>& antinodes);
+
 private:
+
     std::unordered_map<char, std::vector<Point>> m_antennaMap;
+    
     size_t  m_rows, m_cols;
 
 };

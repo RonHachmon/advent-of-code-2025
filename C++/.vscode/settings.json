@@ -66,6 +66,7 @@
         "unordered_set": "cpp",
         "functional": "cpp",
         "array": "cpp",
-        "map": "cpp"
+        "map": "cpp",
+        "optional": "cpp"
     }
 }
