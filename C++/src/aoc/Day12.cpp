@@ -2,212 +2,216 @@
 #include <iostream>
 #include <sstream>
 #include <numeric>
-#include <Array>
- 
 #include "ContainerUlits.hpp"
 #include "Point.hpp"
 #include "Direction.hpp"
+#include <array>
 
 namespace aoc {
 
-Day12::Day12() :
+
+
+Day12::Day12() : 
     DaySolution(12),
-    m_maze{},
-    m_rows{},
-    m_cols{},
-    m_visitedPermiters{}
-{
-
-
-}
-
-
-
+    gardenMap_{},
+    mapRows_{0},
+    mapCols_{0},
+    visitedFenceSegments_{}
+{}
 
 std::string Day12::solvePart1(const std::vector<std::string>& input) {
-    parseInput(input);
-    uint64_t area = 0;
-    uint64_t perimeter = 0;
-    uint64_t res = 0;
-    std::unordered_set<Point> visited{};
-    Point current_point{};
-
-    for(int i = 0; i < m_rows; i++){
-        for(int j = 0; j < m_cols; j++){
-            current_point = Point{i,j};
-
-            if(isInContainer(visited, current_point))
-            {
-                continue;
-            }
-
-            calcAreaAndPerimeter(m_maze[i][j], Point{i,j}, area, perimeter, visited);
-            std::cout << m_maze[i][j] << " Area: " << area << "   Perm: " << perimeter << std::endl;
-            res += area * perimeter;
-            area = perimeter = 0;
-            m_visitedPermiters.clear();
-        }
-    }
-
-    
-    
-    return std::to_string(res);
+    parseGardenMap(input);
+    uint64_t totalCost = calculateTotalFencingCost(false);
+    return std::to_string(totalCost);
 }
 
 std::string Day12::solvePart2(const std::vector<std::string>& input) {
-
-    
-    parseInput(input);
-    m_visitedPermiters.clear();
-    uint64_t area = 0;
-    uint64_t perimeter = 0;
-    uint64_t res = 0;
-    std::unordered_set<Point> visited{};
-    Point current_point{};
-
-    for(int i = 0; i < m_rows; i++){
-        for(int j = 0; j < m_cols; j++){
-            current_point = Point{i,j};
-
-            if(isInContainer(visited, current_point))
-            {
-                continue;
-            }
-
-            calcAreaAndPerimeter(m_maze[i][j], Point{i,j}, area, perimeter, visited, std::nullopt);
-            //std::cout << m_maze[i][j] << " Area: " << area << "   Perm: " << perimeter << std::endl;
-            res += area * perimeter;
-            area = perimeter = 0;
-            m_visitedPermiters.clear();
-        }
-    }
-
-    
-    
-    return std::to_string(res);
+    parseGardenMap(input);
+    uint64_t totalCost = calculateTotalFencingCost(true);
+    return std::to_string(totalCost);
 }
 
-
-
-void  Day12::calcAreaAndPerimeter(char current_field, Point point, uint64_t& area, uint64_t& perimeter, std::unordered_set<Point>& visited){
-    
-    static const std::array<Direction, 4> possible_directions = {Direction::NORTH, Direction::SOUTH, Direction::WEST, Direction::EAST};
-
-   if(!point.isInBounds(m_rows, m_cols) || m_maze[point.getX()][point.getY()] != current_field){
-        ++perimeter;
-        return;
-    }
-
-
-    if(isInContainer(visited, point)){
-        return;
-    }
-
-
-
-    visited.insert(point);
-    ++area;
-
-    for(int i = 0; i < 4; i++){
-        calcAreaAndPerimeter(current_field, point.moved(possible_directions[i]), area, perimeter, visited);
-    }
-}
-
-
-
-void  Day12::calcAreaAndPerimeter(char current_field, Point point, uint64_t& area, uint64_t& perimeter, std::unordered_set<Point>& visited, std::optional<Direction> prevDirection){
-    static const std::array<Direction, 4> possible_directions = {Direction::NORTH, Direction::WEST, Direction::SOUTH, Direction::EAST};
-
-    if(!point.isInBounds(m_rows, m_cols) || m_maze[point.getX()][point.getY()] != current_field){
-        if(prevDirection.has_value()){
-
-            Direction previousDirection = prevDirection.value();
-            Direction fenceDirection = prevDirection.value();
-            fenceDirection.rotate(Direction::Rotation::ROTATE_90);
-
-            bool isHorizontal = fenceDirection.isHorizontal();
-
-
-        
-            Point neighborPoints[2] = {point.moved(fenceDirection), point.moved(fenceDirection.opposite())}; 
-
-            if(isInContainer(m_visitedPermiters, previousDirection)){
-                if(!isInContainer(m_visitedPermiters[previousDirection], neighborPoints[0]) && !isInContainer(m_visitedPermiters[previousDirection], neighborPoints[1])){
-
-                    // if(current_field =='E'){
-                    //     std::cout << "New Fence: " << point.getX() << " " << point.getY() << std::endl;
-                    // }
-                    
-                    
-                    ++perimeter;
-                }
-
-                if(isInContainer(m_visitedPermiters[previousDirection], neighborPoints[0]) && isInContainer(m_visitedPermiters[previousDirection], neighborPoints[1])){
-                    --perimeter;
-                }
-            }
-            else{
-                std::unordered_set<Point> fencePoints{};
-                m_visitedPermiters[previousDirection] = fencePoints;
-
-                    // if(current_field =='E'){
-                    //     std::cout << "New Fence: " << point.getX() << " " << point.getY() << std::endl;
-                    // }
-                    
-                ++perimeter;
-            }
-
-            m_visitedPermiters[previousDirection].insert(point);
-
-
-        }
-        return;
-    }
-
-    if(isInContainer(visited, point)){
-        return;
-    }
-
-
-    visited.insert(point);
-    ++area;
-
-    for(int i = 0; i < 4; i++){
-        calcAreaAndPerimeter(current_field, point.moved(possible_directions[i]), area, perimeter, visited, possible_directions[i]);
-    }
-
-
-}
-
-
-void Day12::parseInput(const std::vector<std::string>& input) {
-
-    m_maze.clear();
-
+void Day12::parseGardenMap(const std::vector<std::string>& input) {
+    gardenMap_.clear();
     
     if (input.empty()) {
-        m_rows = m_cols = 0;
+        mapRows_ = mapCols_ = 0;
         return;
     }
     
-    // Set dimensions
-    m_cols = input[0].size();
-    m_rows = input.size();
+    mapCols_ = input[0].size();
+    mapRows_ = input.size();
     
-    // Parse maze
-    m_maze.reserve(m_rows);
+    gardenMap_.reserve(mapRows_);
     for (const auto& line : input) {
         std::vector<char> row;
-        row.reserve(m_cols);
+        row.reserve(mapCols_);
         
-        for (char c : line) {
-            row.push_back(c);
+        for (char plantType : line) {
+            row.push_back(plantType);
         }
         
-        m_maze.push_back(std::move(row));
+        gardenMap_.push_back(std::move(row));
     }
 }
 
+uint64_t Day12::calculateTotalFencingCost(bool useBulkDiscount) {
+    uint64_t totalCost = 0;
+    std::unordered_set<Point> globalVisited;
+    
+    for (size_t row = 0; row < mapRows_; ++row) {
+        for (size_t col = 0; col < mapCols_; ++col) {
+            Point currentPoint{static_cast<int>(row), static_cast<int>(col)};
+            
+            if (isInContainer(globalVisited, currentPoint)) {
+                continue;
+            }
+            
+            RegionMetrics metrics;
+            char plantType = getPlantTypeAt(currentPoint);
+            
+            exploreRegion(plantType, currentPoint, metrics, globalVisited, useBulkDiscount);
+                        
+            totalCost += metrics.calculateCost();
+            visitedFenceSegments_.clear();
+        }
+    }
+    
+    return totalCost;
+}
 
+void Day12::exploreRegion(char plantType, Point startPoint, RegionMetrics& metrics, 
+                         std::unordered_set<Point>& globalVisited, bool useBulkDiscount) {
+    if (useBulkDiscount) {
+        calculateBulkDiscountPerimeter(plantType, startPoint, metrics, globalVisited, std::nullopt);
+    } else {
+        calculateBasicPerimeter(plantType, startPoint, metrics, globalVisited);
+    }
+}
+
+void Day12::calculateBasicPerimeter(char plantType, Point currentPoint, RegionMetrics& metrics, 
+                                   std::unordered_set<Point>& regionVisited) {
+
+    static const  std::array<Direction, 4> CARDINAL_DIRECTIONS = {
+        Direction::NORTH, Direction::SOUTH, Direction::WEST, Direction::EAST
+    };
+
+
+    if (!isValidGardenCell(currentPoint, plantType)) {
+        ++metrics.perimeter;
+        return;
+    }
+    
+    if (isInContainer(regionVisited, currentPoint)) {
+        return;
+    }
+    
+    regionVisited.insert(currentPoint);
+    ++metrics.area;
+    
+    for (const Direction& direction : CARDINAL_DIRECTIONS) {
+        Point nextPoint = currentPoint.moved(direction);
+        calculateBasicPerimeter(plantType, nextPoint, metrics, regionVisited);
+    }
+}
+
+void Day12::calculateBulkDiscountPerimeter(char plantType, Point currentPoint, RegionMetrics& metrics, 
+                                         std::unordered_set<Point>& regionVisited, 
+                                         std::optional<Direction> previousDirection) {
+
+    static const std::array<Direction, 4> CLOCKWISE_DIRECTIONS = {
+        Direction::NORTH, Direction::WEST, Direction::SOUTH, Direction::EAST
+    };
+
+    if (!isValidGardenCell(currentPoint, plantType)) {
+        if (previousDirection.has_value()) {
+            Direction fenceDirection = previousDirection.value();
+            
+            // Initialize fence direction tracking if needed
+            if (!isInContainer(visitedFenceSegments_, fenceDirection)) {
+                std::unordered_set<Point> fencePoints;
+                visitedFenceSegments_[fenceDirection] = fencePoints;
+                ++metrics.perimeter;
+            } else {
+                
+                if (shouldIncrementPerimeter(currentPoint, fenceDirection)) {
+                    ++metrics.perimeter;
+                }
+
+                //coonecting fence loop
+                if (shouldDecrementPerimeter(currentPoint, fenceDirection)) {
+                    --metrics.perimeter;
+                }
+            }
+            
+            recordFencePoint(currentPoint, fenceDirection);
+        }
+        return;
+    }
+    
+    if (isInContainer(regionVisited, currentPoint)) {
+        return;
+    }
+    
+    regionVisited.insert(currentPoint);
+    ++metrics.area;
+    
+    for (const Direction& direction : CLOCKWISE_DIRECTIONS) {
+        Point nextPoint = currentPoint.moved(direction);
+        calculateBulkDiscountPerimeter(plantType, nextPoint, metrics, regionVisited, direction);
+    }
+}
+
+bool Day12::isValidGardenCell(const Point& point, char expectedPlantType) const {
+    return !isOutOfBounds(point) && getPlantTypeAt(point) == expectedPlantType;
+}
+
+bool Day12::isOutOfBounds(const Point& point) const {
+    return !point.isInBounds(static_cast<int>(mapRows_), static_cast<int>(mapCols_));
+}
+
+char Day12::getPlantTypeAt(const Point& point) const {
+    return gardenMap_[point.getX()][point.getY()];
+}
+
+bool Day12::shouldIncrementPerimeter(const Point& fencePoint, Direction fenceDirection) const {
+    if (!isInContainer(visitedFenceSegments_, fenceDirection)) {
+        return true;
+    }
+    
+    Direction perpendicularDirection = fenceDirection;
+    perpendicularDirection.rotate(Direction::Rotation::ROTATE_90);
+    
+    Point neighborPoints[2] = {
+        fencePoint.moved(perpendicularDirection), 
+        fencePoint.moved(perpendicularDirection.opposite())
+    };
+    
+    const auto& existingFencePoints = visitedFenceSegments_.at(fenceDirection);
+    return !isInContainer(existingFencePoints, neighborPoints[0]) && 
+           !isInContainer(existingFencePoints, neighborPoints[1]);
+}
+
+bool Day12::shouldDecrementPerimeter(const Point& fencePoint, Direction fenceDirection) const {
+    if (!isInContainer(visitedFenceSegments_, fenceDirection)) {
+        return false;
+    }
+    
+    Direction perpendicularDirection = fenceDirection;
+    perpendicularDirection.rotate(Direction::Rotation::ROTATE_90);
+    
+    Point neighborPoints[2] = {
+        fencePoint.moved(perpendicularDirection), 
+        fencePoint.moved(perpendicularDirection.opposite())
+    };
+    
+    const auto& existingFencePoints = visitedFenceSegments_.at(fenceDirection);
+    return isInContainer(existingFencePoints, neighborPoints[0]) && 
+           isInContainer(existingFencePoints, neighborPoints[1]);
+}
+
+void Day12::recordFencePoint(const Point& fencePoint, Direction fenceDirection) {
+    visitedFenceSegments_[fenceDirection].insert(fencePoint);
+}
 
 } // namespace aoc

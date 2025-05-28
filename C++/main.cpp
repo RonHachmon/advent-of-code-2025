@@ -13,7 +13,7 @@
 
 
 int main() {
-    aoc::Day13 day{};
+    aoc::Day12 day{};
 
     //day.runTest(1, aoc::PartSolver::PART_ONE);
     // day.runTest(2, aoc::PartSolver::PART_TWO);
