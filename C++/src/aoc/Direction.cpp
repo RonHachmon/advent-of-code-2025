@@ -23,16 +23,16 @@ const Direction* const Direction::ALL_DIRECTIONS[8] = {
 };
 
 
-const Direction Direction::opposite() const {
+Direction Direction::opposite() const {
     // Map each direction to its opposite
-    if (this == &NORTH) return SOUTH;
-    if (this == &NORTHEAST) return SOUTHWEST;
-    if (this == &EAST) return WEST;
-    if (this == &SOUTHEAST) return NORTHWEST;
-    if (this == &SOUTH) return NORTH;
-    if (this == &SOUTHWEST) return NORTHEAST;
-    if (this == &WEST) return EAST;
-    if (this == &NORTHWEST) return SOUTHEAST;
+    if (*this == NORTH) return SOUTH;
+    if (*this == NORTHEAST) return SOUTHWEST;
+    if (*this == EAST) return WEST;
+    if (*this == SOUTHEAST) return NORTHWEST;
+    if (*this == SOUTH) return NORTH;
+    if (*this == SOUTHWEST) return NORTHEAST;
+    if (*this == WEST) return EAST;
+    if (*this == NORTHWEST) return SOUTHEAST;
     
     throw std::logic_error("Unknown direction");
 }
@@ -54,6 +54,29 @@ void Direction::rotate(Rotation angle) {
     // Calculate new index with wrapping
     size_t newIndex = (currentIndex + steps) % 8;
     *this = *ALL_DIRECTIONS[newIndex];
+  
+}
+
+Direction Direction::rotated(Rotation angle) const {
+    // Get current index
+
+    Direction result = *this;
+    int currentIndex = -1;
+    for(int i = 0; i < 8; i++) {
+        if(*this == *ALL_DIRECTIONS[i]) {
+            currentIndex = i;
+            break;
+        }
+    }
+    
+    // Calculate rotation steps (each step is 45 degrees)
+    int steps = static_cast<int>(angle) / 45;
+    
+    // Calculate new index with wrapping
+    size_t newIndex = (currentIndex + steps) % 8;
+    result = *ALL_DIRECTIONS[newIndex];
+
+    return result;
   
 }
 

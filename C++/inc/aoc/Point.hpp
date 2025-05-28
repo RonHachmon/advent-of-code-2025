@@ -14,7 +14,7 @@ public:
      * @param x The x-coordinate
      * @param y The y-coordinate
      */
-    explicit Point(int x, int y);
+    explicit Point(int x = 0, int y = 0);
 
     // Copy constructor
     Point(const Point& other) = default;

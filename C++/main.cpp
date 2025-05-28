@@ -8,13 +8,31 @@
 // #include "Day09.hpp"
 // #include "Day10.hpp"
 #include "Day11.hpp"
-namespace fs = std::filesystem;
+#include "Day12.hpp"
+#include "Day13.hpp"
+
 
 int main() {
-    aoc::Day11 day{};
-    //day.runTest(1, aoc::PartSolver::BOTH_PARTS);
-    //day.runTest(2, aoc::PartSolver::PART_ONE);
+    aoc::Day13 day{};
+
+    //day.runTest(1, aoc::PartSolver::PART_ONE);
+    // day.runTest(2, aoc::PartSolver::PART_TWO);
+    // day.runTest(3, aoc::PartSolver::PART_TWO);
+    // //day.runTest(2, aoc::PartSolver::PART_ONE);
     day.run(aoc::PartSolver::BOTH_PARTS);
+
+    // // auto res = equation1.findXAmdY(equation2);
+
+    // // std::cout << "A "<< res.first <<std::endl;
+    // // std::cout << "B "<< res.second <<std::endl;
+
+    // aoc::BinaryEqueation equation1{26, 67, 12748};
+    // aoc::BinaryEqueation equation2{66, 21, 12176};
+    // auto res = equation1.findXAmdY(equation2);
+
+    // std::cout << "A "<< res.first <<std::endl;
+    // std::cout << "B "<< res.second <<std::endl;
+   
 
     // std::cout << "Splited Stones "<< day.splitStoneZeroSpecialized(25) <<std::endl;
     // std::cout << "Splited Stones "<< day.splitStoneZeroSpecialized(75) <<std::endl;

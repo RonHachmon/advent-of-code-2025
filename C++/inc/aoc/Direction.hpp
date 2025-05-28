@@ -1,5 +1,5 @@
 #pragma once
-
+#include <functional>
 namespace aoc {
 
 
@@ -44,7 +44,7 @@ public:
      *
      * @return The opposite direction instance
      */
-    const Direction opposite() const;
+    Direction opposite() const;
 
     /**
      * Rotates the direction by the specified angle.
@@ -54,6 +54,11 @@ public:
      */
     void rotate(Rotation angle);
 
+    Direction rotated(Rotation angle) const;
+
+    bool isHorizontal() const { return dx == 0; }
+
+    bool isVertical() const { return dy == 0; }
     /**
      * Getters for dx and dy
      */
@@ -70,3 +75,15 @@ private:
 };
 
 } // namespace aoc
+
+
+namespace std {
+    template <>
+    struct hash<aoc::Direction> {
+        std::size_t operator()(const aoc::Direction& p) const noexcept {
+            std::size_t h1 = std::hash<int>{}(p.getDx());
+            std::size_t h2 = std::hash<int>{}(p.getDy());
+            return h1 ^ (h2 << 1); // Combine hashes
+        }
+    };
+}
