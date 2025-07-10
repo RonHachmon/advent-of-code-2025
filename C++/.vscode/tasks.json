@@ -24,6 +24,7 @@
           "src/aoc/Day11.cpp",
           "src/aoc/Day12.cpp",
           "src/aoc/Day13.cpp",
+          "src/aoc/Day14.cpp",
           "src/aoc/DaySolution.cpp",
           "src/aoc/Point.cpp",
           "src/aoc/Direction.cpp",

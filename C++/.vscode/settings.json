@@ -67,6 +67,8 @@
         "functional": "cpp",
         "array": "cpp",
         "map": "cpp",
-        "optional": "cpp"
+        "optional": "cpp",
+        "regex": "cpp",
+        "thread": "cpp"
     }
 }

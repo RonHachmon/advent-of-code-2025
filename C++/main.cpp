@@ -10,16 +10,17 @@
 #include "Day11.hpp"
 #include "Day12.hpp"
 #include "Day13.hpp"
-
+#include "Day14.hpp"
 
 int main() {
-    aoc::Day12 day{};
+    aoc::Day14 day{};
 
     //day.runTest(1, aoc::PartSolver::PART_ONE);
     // day.runTest(2, aoc::PartSolver::PART_TWO);
     // day.runTest(3, aoc::PartSolver::PART_TWO);
     // //day.runTest(2, aoc::PartSolver::PART_ONE);
-    day.run(aoc::PartSolver::BOTH_PARTS);
+    //day.runTest(1,aoc::PartSolver::PART_ONE);
+    day.run(aoc::PartSolver::PART_TWO);
 
     // // auto res = equation1.findXAmdY(equation2);
 
